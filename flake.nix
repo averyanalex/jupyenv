@@ -9,29 +9,39 @@
   ];
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.11";
+
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
+
   inputs.flake-utils.url = "github:numtide/flake-utils";
+
   inputs.ihaskell.url = "github:ihaskell/ihaskell";
-  inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
+  # inputs.ihaskell.inputs.nixpkgs23_11.follows = "nixpkgs-stable";
+  # inputs.ihaskell.inputs.nixpkgsMaster.follows = "nixpkgs";
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
+
   inputs.nix-dart.url = "github:djacu/nix-dart";
   inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nix-dart.inputs.flake-utils.follows = "flake-utils";
+
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix/0ba0746d62974403daf717cded3f24c617622bc7";
   inputs.npmlock2nix.flake = false;
+
   inputs.opam-nix.url = "github:tweag/opam-nix/75199758e1954f78286e7e79c0e3916e28b732b0";
   inputs.opam-nix.inputs.flake-compat.follows = "flake-compat";
   inputs.opam-nix.inputs.flake-utils.follows = "flake-utils";
   inputs.opam-nix.inputs.nixpkgs.follows = "nixpkgs";
+
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs-stable";
+
   inputs.poetry2nix.url = "github:nix-community/poetry2nix";
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
   inputs.rust-overlay.inputs.flake-utils.follows = "flake-utils";
   inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
@@ -65,8 +75,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         python = pkgs.python3;
-        poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
-        poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
+        poetry = poetry2nix.packages.${system}.poetry2nix;
 
         baseArgs = {
           inherit self system;
@@ -146,9 +155,7 @@
           packages = [
             pkgs.alejandra
             pkgs.typos
-            poetry2nixPkgs.cli
             poetry
-            pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
             docsLib.mkdocs
           ];

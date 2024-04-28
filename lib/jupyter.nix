@@ -13,7 +13,7 @@
     pkgs ?
       import self.inputs.nixpkgs {
         inherit system;
-        overlays = [poetry2nix.overlay];
+        overlays = [poetry2nix.overlays.default];
       },
     # https://github.com/nix-community/poetry2nix#mkPoetryEnv
     projectDir ? self, # TODO: only include relevant files/folders
